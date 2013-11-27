@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>app-adperformance by VoltDB</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>app-adperformance</h1>
+        <p>Capture digital ad events and track performance metrics in realtime. </p>
+
+        <p class="view"><a href="https://github.com/VoltDB/app-adperformance">View the Project on GitHub <small>VoltDB/app-adperformance</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/VoltDB/app-adperformance/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/VoltDB/app-adperformance/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/VoltDB/app-adperformance">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="voltdb-example-app-ad-performance" class="anchor" href="#voltdb-example-app-ad-performance"><span class="octicon octicon-link"></span></a>VoltDB Example App: Ad Performance</h1>
+
+<h2>
+<a name="use-case" class="anchor" href="#use-case"><span class="octicon octicon-link"></span></a>Use Case</h2>
+
+<p>This application simulates a high velocity stream of events (impressions, clickthroughs, conversions) that are enriched and ingested.  These events are randomly generated in the client, but represent a stream of events that would be received from web traffic.</p>
+
+<p>The "TrackEvent" stored procedure processes these events.  It looks up the corresponding advertiser and campaign based on the creative ID which represents which ad was shown.  It also retrieves the corresponding web site and page based on the inventory ID from the event.  The timestamp and event type fields are converted to aid in aggregation, and all of this data is then inserted into the impression_data table.</p>
+
+<p>Several views maintain real-time aggregations on this table to provide a minutely summary for each advertiser, plus drill-down reports grouped by campaign and creative to show detail-level metrics, costs and rates with real-time accuracy.</p>
+
+<h2>
+<a name="code-organization" class="anchor" href="#code-organization"><span class="octicon octicon-link"></span></a>Code organization</h2>
+
+<p>The code is divided into two projects:</p>
+
+<ul>
+<li>"db": the database project, which contains the schema, stored procedures and other configurations that are compiled into a catalog and run in a VoltDB database.<br>
+</li>
+<li>"client": a java client that loads a set of cards and then generates random card transactions a high velocity to simulate card activity.</li>
+<li>"web": a web dashboard client (static html page with dynamic content)</li>
+</ul><p>See below for instructions on running these applications.  For any questions, 
+please contact <a href="mailto:fieldengineering@voltdb.com">fieldengineering@voltdb.com</a>.</p>
+
+<h2>
+<a name="pre-requisites" class="anchor" href="#pre-requisites"><span class="octicon octicon-link"></span></a>Pre-requisites</h2>
+
+<p>Before running these scripts you need to have VoltDB installed, and you should add the voltdb-$(VERSION)/bin directory to your PATH environment variable, for example:</p>
+
+<pre><code>export PATH="$PATH:$HOME/voltdb-$(VERSION)/bin"
+</code></pre>
+
+<h2>
+<a name="instructions" class="anchor" href="#instructions"><span class="octicon octicon-link"></span></a>Instructions</h2>
+
+<ol>
+<li>
+<p>Start the database in the background</p>
+
+<p>./start_db.sh</p>
+</li>
+<li>
+<p>Run the client application</p>
+
+<p>./run_client.sh</p>
+</li>
+<li><p>Open the web/adperformance.html page in a web browser to view the real-time dashboard</p></li>
+<li>
+<p>To stop the database and clean up temp files</p>
+
+<p>voltadmin shutdown
+./clean.sh</p>
+</li>
+</ol><h2>
+<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Options</h2>
+
+<p>You can control various characteristics of the demo by modifying the parameters passed into the InvestmentBenchmark java application in the run_client.sh script.</p>
+
+<p>Speed &amp; Duration:</p>
+
+<pre><code>--duration=120                (benchmark duration in seconds)
+--autotune=true               (true = ignore rate limit, run at max throughput until latency is impacted)
+                              (false = run at the specified rate limit)
+--ratelimit=20000             (when autotune=false, run up to this rate of requests/second)
+</code></pre>
+
+<p>Metadata volumes and ratios:</p>
+
+<pre><code>--sites=100                   (number of web sites where ad events may occur)
+--pagespersite=10             (number of pages per web site)
+--advertisers=100             (number of advertisers)
+--campaignsperadvertiser=10   (number of campaigns per advertiser)
+--creativespercampaign=5      (number of creatives or banners per campaign)
+</code></pre>
+
+<h2>
+<a name="instructions-for-running-on-a-cluster" class="anchor" href="#instructions-for-running-on-a-cluster"><span class="octicon octicon-link"></span></a>Instructions for running on a cluster</h2>
+
+<p>Before running this demo on a cluster, make the following changes:</p>
+
+<ol>
+<li>
+<p>On each server, edit the start_db.sh file to set the HOST variable to the name of the <strong>first</strong> server in the cluster:</p>
+
+<p>HOST=voltserver01</p>
+</li>
+<li>
+<p>On each server, edit db/deployment.xml to change hostcount from 1 to the number of servers:</p>
+
+<p></p>
+</li>
+<li>
+<p>On each server, run the start script:</p>
+
+<p>./start_db.sh</p>
+</li>
+<li>
+<p>On one server, Edit the run_client.sh script to set the SERVERS variable to a comma-separated list of the servers in the cluster</p>
+
+<p>SERVERS=voltserver01,voltserver02,voltserver03</p>
+</li>
+<li>
+<p>Run the client script:</p>
+
+<p>./run_client.sh</p>
+</li>
+</ol>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/VoltDB">VoltDB</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
