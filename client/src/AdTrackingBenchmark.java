@@ -156,23 +156,13 @@ public class AdTrackingBenchmark extends BaseBenchmark {
         }
     }
 
-    public void printResults() throws Exception {
-        
-        System.out.print("\n" + HORIZONTAL_RULE);
-        System.out.println(" Transaction Results");
-        System.out.println(HORIZONTAL_RULE);
-        BenchmarkCallback.printProcedureResults("INVENTORY.insert");
-        BenchmarkCallback.printProcedureResults("CREATIVES.insert");
-        BenchmarkCallback.printProcedureResults("TrackEvent");
-
-        super.printResults();
-    }
-    
     public static void main(String[] args) throws Exception {
         BenchmarkConfig config = BenchmarkConfig.getConfig("AdTrackingBenchmark",args);
         
         BaseBenchmark benchmark = new AdTrackingBenchmark(config);
         benchmark.runBenchmark();
+
+	printHeading("Note: The database must be restarted before running this benchmark again.");
 
     }
 }

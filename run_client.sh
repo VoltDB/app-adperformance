@@ -17,8 +17,7 @@ if [ ! -f $CLASSPATH ]; then
     echo "voltdb-*.jar file not found for CLASSPATH, edit this script to provide the correct path"
     exit
 fi
-# the VoltDB client uses google guava
-CLASSPATH="$CLASSPATH:`ls -1 $VOLTDB_HOME/lib/guava-*.jar`"
+
 # the benchmark uses Apache commons CLI
 CLASSPATH="$CLASSPATH:`ls -1 $VOLTDB_HOME/lib/commons-cli-*.jar`"
 
@@ -35,7 +34,7 @@ java -classpath obj:$CLASSPATH:obj -Dlog4j.configuration=file://$VOLTDB_HOME/vol
     client.AdTrackingBenchmark \
     --displayinterval=5 \
     --warmup=5 \
-    --duration=600 \
+    --duration=30 \
     --servers=$SERVERS \
     --ratelimit=20000 \
     --autotune=true \

@@ -89,9 +89,7 @@ public abstract class BaseBenchmark {
         periodicStatsContext = client.createStatsContext();
         fullStatsContext = client.createStatsContext();
 
-        System.out.print(HORIZONTAL_RULE);
-        System.out.println(" Command Line Configuration");
-        System.out.println(HORIZONTAL_RULE);
+	printHeading("Command Line Configuration");
         System.out.println(config.getConfigDumpString());
     }
 
@@ -188,30 +186,25 @@ public abstract class BaseBenchmark {
      * @throws Exception if anything unexpected happens.
      */
     public synchronized void printResults() throws Exception {
+        printHeading("Transaction Results");
+	BenchmarkCallback.printAllResults();
+	
         ClientStats stats = fullStatsContext.fetch().getStats();
 
         // 3. Performance statistics
-        System.out.print(HORIZONTAL_RULE);
-        System.out.println(" Client Workload Statistics");
-        System.out.println(HORIZONTAL_RULE);
+        printHeading("Client Workload Statistics");
 
         System.out.printf("Average throughput:            %,9d txns/sec\n", stats.getTxnThroughput());
-        // cast stats.getAverateLatency from long to double
         System.out.printf("Average latency:               %,9.2f ms\n", (double)stats.getAverageLatency());
-        //System.out.printf("Average latency:               %,9d ms\n", stats.getAverageLatency());
         System.out.printf("95th percentile latency:       %,9d ms\n", stats.kPercentileLatency(.95));
         System.out.printf("99th percentile latency:       %,9d ms\n", stats.kPercentileLatency(.99));
 
-        System.out.print("\n" + HORIZONTAL_RULE);
-        System.out.println(" System Server Statistics");
-        System.out.println(HORIZONTAL_RULE);
+        printHeading("System Server Statistics");
 
         if (config.autotune) {
             System.out.printf("Targeted Internal Avg Latency: %,9d ms\n", config.latencytarget);
         }
-        // cast stats.getAverageInternalLatency from long to double
         System.out.printf("Reported Internal Avg Latency: %,9.2f ms\n", (double)stats.getAverageInternalLatency());
-        //System.out.printf("Reported Internal Avg Latency: %,9d ms\n", stats.getAverageInternalLatency());
 
         // 4. Write stats to file if requested
         client.writeSummaryCSV(stats, config.statsfile);
@@ -241,16 +234,13 @@ public abstract class BaseBenchmark {
      * @throws Exception if anything unexpected happens.
      */
     public void runBenchmark() throws Exception {
-        System.out.print(HORIZONTAL_RULE);
-        System.out.println(" Setup & Initialization");
-        System.out.println(HORIZONTAL_RULE);
+        printHeading("Setup & Initialization");
 
         // connect to one or more servers, loop until success
         connect(config.servers);
 
         // initialize using synchronous call
         System.out.println("\nPre-loading Tables...\n");
-        //client.callProcedure("Initialize", config.contestants, CONTESTANT_NAMES_CSV);
         initialize();
 
         // Run the benchmark loop for the requested warmup time
@@ -261,9 +251,7 @@ public abstract class BaseBenchmark {
             iterate();
         }
 
-        System.out.print(HORIZONTAL_RULE);
-        System.out.println("Starting Benchmark");
-        System.out.println(HORIZONTAL_RULE);
+        printHeading("Starting Benchmark");
 
         // reset the stats after warmup
         fullStatsContext.fetchAndResetBaseline();
@@ -292,6 +280,15 @@ public abstract class BaseBenchmark {
 
         // close down the client connections
         client.close();
+    }
+
+    /**
+     * Prints headings
+     */
+    public static void printHeading(String heading) {
+        System.out.print("\n"+HORIZONTAL_RULE);
+        System.out.println(" " + heading);
+        System.out.println(HORIZONTAL_RULE);
     }
 
 }

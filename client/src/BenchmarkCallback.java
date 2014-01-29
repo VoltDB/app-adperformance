@@ -1,29 +1,19 @@
 /* This file is part of VoltDB.
  * Copyright (C) 2008-2013 VoltDB Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with VoltDB.  If not, see <http://www.gnu.org/licenses/>.
  */
 package client;
 
-import com.google.common.collect.ConcurrentHashMultiset;
-import com.google.common.collect.Multiset;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import com.google_voltpatches.common.collect.ConcurrentHashMultiset;
+import com.google_voltpatches.common.collect.Multiset;
 import org.voltdb.client.ClientResponse;
 import org.voltdb.client.ProcedureCallback;
 
 public class BenchmarkCallback implements ProcedureCallback {
 
     private static Multiset<String> stats = ConcurrentHashMultiset.create();
+    private static ConcurrentHashMap<String,Integer> procedures = new ConcurrentHashMap<String,Integer>();
     String procedureName;
     long maxErrors;
 
@@ -42,10 +32,19 @@ public class BenchmarkCallback implements ProcedureCallback {
         System.out.println("    rollbacks: " + getCount(procedureName,"rollback"));
     }
 
+    public static void printAllResults() {
+	List<String> l = new ArrayList<String>(procedures.keySet());
+	Collections.sort(l);
+	for (String e : l) {
+	    printProcedureResults(e);
+	}
+    }
+
     public BenchmarkCallback(String procedure, long maxErrors) { 
         super();
         this.procedureName = procedure;
         this.maxErrors = maxErrors;
+	procedures.putIfAbsent(procedure,1);
     }
 
     public BenchmarkCallback(String procedure) {
