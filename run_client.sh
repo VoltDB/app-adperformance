@@ -34,7 +34,7 @@ java -classpath obj:$CLASSPATH:obj -Dlog4j.configuration=file://$VOLTDB_HOME/vol
     client.AdTrackingBenchmark \
     --displayinterval=5 \
     --warmup=5 \
-    --duration=30 \
+    --duration=120 \
     --servers=$SERVERS \
     --ratelimit=20000 \
     --autotune=true \

@@ -26,10 +26,9 @@ please contact fieldengineering@voltdb.com.
 
 Pre-requisites
 --------------
-Before running these scripts you need to have VoltDB 3.7 (Enterprise or Community) or later installed, and you should add the voltdb-$(VERSION)/bin directory to your PATH environment variable, for example:
+Before running these scripts you need to have VoltDB 4.0 (Enterprise or Community) or later installed, and you should add the voltdb-$(VERSION)/bin directory to your PATH environment variable, for example:
 
-    VERSION="ent-3.7"
-    export PATH="$PATH:$HOME/voltdb-$(VERSION)/bin"
+    export PATH="$PATH:$HOME/voltdb-ent-4.0.2/bin"
 
 
 Instructions
