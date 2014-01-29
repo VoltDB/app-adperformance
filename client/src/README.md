@@ -16,12 +16,11 @@ BenchmarkCallback.java
 BenchmarkConfig.java
   - defines the commmand-line arguments for the benchmark
   
-CardBenchmark.java
+AdTrackingBenchmark.java
   - extends BaseBenchmark.java
   - uses command-line arguments from BenchmarkConfig.java
   - Provides the implementation for application-specific actions:
-     initialize() - executed once, pre-populates card accounts table
-     iterate() - executed at a controlled rate throughout the duration of the benchmark, generates randomized preauthorizations, purchases and transfers.
-     printResults() - customized to list the results of the particular stored procedures involved.
+     initialize() - executed once, pre-populates inventory and campaigns
+     iterate() - executed at a controlled rate throughout the duration of the benchmark, generates randomized events.
 
-If you were to use this applicatoin as a template, you should only need to copy and modify CardBenchmark and possibly add options to BenchmarkConfig.
+If you were to use this applicatoin as a template, you should only need to copy and modify AdTrackingBenchmark and possibly add options to BenchmarkConfig.

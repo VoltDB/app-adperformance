@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2013 VoltDB Inc.
+ Copyright (C) 2014 VoltDB Inc.
 */
 
 var con;
