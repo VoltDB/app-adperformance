@@ -40,7 +40,15 @@
 
 <p>Several views maintain real-time aggregations on this table to provide a minutely summary for each advertiser, plus drill-down reports grouped by campaign and creative to show detail-level metrics, costs and rates with real-time accuracy.</p>
 
-<h2>
+<p>Several new SQL features in VoltDB are demonstrated in this application, including:</p>
+
+<ul>
+<li>VIEW group by expressions</li>
+<li>
+<a href="http://voltdb.com/docs/UsingVoltDB/sqlfunctruncate.php">TRUNCATE</a> Timestamp function</li>
+<li>
+<a href="http://voltdb.com/docs/UsingVoltDB/sqlfuncdecode.php">DECODE</a> function</li>
+</ul><h2>
 <a name="code-organization" class="anchor" href="#code-organization"><span class="octicon octicon-link"></span></a>Code organization</h2>
 
 <p>The code is divided into two projects:</p>
@@ -56,9 +64,9 @@ please contact <a href="mailto:fieldengineering@voltdb.com">fieldengineering@vol
 <h2>
 <a name="pre-requisites" class="anchor" href="#pre-requisites"><span class="octicon octicon-link"></span></a>Pre-requisites</h2>
 
-<p>Before running these scripts you need to have VoltDB installed, and you should add the voltdb-$(VERSION)/bin directory to your PATH environment variable, for example:</p>
+<p>Before running these scripts you need to have VoltDB 4.0 (Enterprise or Community) or later installed, and you should add the voltdb-$(VERSION)/bin directory to your PATH environment variable, for example:</p>
 
-<pre><code>export PATH="$PATH:$HOME/voltdb-$(VERSION)/bin"
+<pre><code>export PATH="$PATH:$HOME/voltdb-ent-4.0.2/bin"
 </code></pre>
 
 <h2>
@@ -143,6 +151,16 @@ please contact <a href="mailto:fieldengineering@voltdb.com">fieldengineering@vol
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-47652901-2");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
