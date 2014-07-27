@@ -15,7 +15,7 @@ Several new SQL features in VoltDB are demonstrated in this application, includi
 
 Code organization
 -----------------
-The code is divided into two projects:
+The code is divided into projects:
 
 - "db": the database project, which contains the schema, stored procedures and other configurations that are compiled into a catalog and run in a VoltDB database.  
 - "client": a java client that loads a set of cards and then generates random card transactions a high velocity to simulate card activity.
@@ -31,28 +31,28 @@ Before running these scripts you need to have VoltDB 4.0 (Enterprise or Communit
     export PATH="$PATH:$HOME/voltdb-ent-4.0.2/bin"
 
 
-Instructions
-------------
+Demo Instructions
+-----------------
 
-1. Start the database in the background
+1. There is only one step to start this example app as a demo on a single server
 
-    ./start_db.sh
-     
-2. Run the client application
+    ./run.sh demo
 
-    ./run_client.sh
+2. Open a web browser to http://hostname:8081
 
-3. Open the web/adperformance.html page in a web browser to view the real-time dashboard
+3. To stop the demo:
 
-4. To stop the database and clean up temp files
+Stop the client
+
+    Ctrl-C
+    
+Stop the database
 
     voltadmin shutdown
-    ./clean.sh
-
 
 Options
 -------
-You can control various characteristics of the demo by modifying the parameters passed into the InvestmentBenchmark java application in the run_client.sh script.
+You can control various characteristics of the demo by modifying the parameters passed into the InvestmentBenchmark java application in the "client" function of the run.sh script.
 
 Speed & Duration:
 
@@ -69,30 +69,28 @@ Metadata volumes and ratios:
     --campaignsperadvertiser=10   (number of campaigns per advertiser)
     --creativespercampaign=5      (number of creatives or banners per campaign)
 
+
 Instructions for running on a cluster
 -------------------------------------
 
 Before running this demo on a cluster, make the following changes:
 
-1. On each server, edit the start_db.sh file to set the HOST variable to the name of the **first** server in the cluster:
+1. On each server, edit the run.sh file to set the HOST variable to the name of the **first** server in the cluster:
     
     HOST=voltserver01
     
-2. On each server, edit db/deployment.xml to change hostcount from 1 to the number of servers:
+2. On each server, edit db/deployment.xml to change hostcount from 1 to the actual number of servers:
 
     <cluster hostcount="1" sitesperhost="3" kfactor="0" />
 
-4. On each server, run the start script:
+4. On each server, start the database
 
-    ./start_db.sh
+	./run.sh server
     
-5. On one server, Edit the run_client.sh script to set the SERVERS variable to a comma-separated list of the servers in the cluster
+5. On one server, Edit the run.sh script to set the SERVERS variable to a comma-separated list of the servers in the cluster
 
     SERVERS=voltserver01,voltserver02,voltserver03
     
 6. Run the client script:
 
-    ./run_client.sh
-
-
-
+	./run.sh client
