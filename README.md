@@ -34,21 +34,29 @@ Before running these scripts you need to have VoltDB 4.0 (Enterprise or Communit
 Demo Instructions
 -----------------
 
-1. There is only one step to start this example app as a demo on a single server
+1. Start the web server
+
+    ./run.sh start_web
+   
+2. Start the database and client 
 
     ./run.sh demo
 
-2. Open a web browser to http://hostname:8081
+3. Open a web browser to http://hostname:8081
 
-3. To stop the demo:
+4. To stop the demo:
 
-Stop the client
+Stop the client (if it hasn't already completed)
 
     Ctrl-C
     
 Stop the database
 
     voltadmin shutdown
+   
+Stop the web server
+
+    ./run.sh stop_web
 
 Options
 -------
