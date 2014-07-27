@@ -51,7 +51,7 @@
 </ul><h2>
 <a name="code-organization" class="anchor" href="#code-organization"><span class="octicon octicon-link"></span></a>Code organization</h2>
 
-<p>The code is divided into two projects:</p>
+<p>The code is divided into projects:</p>
 
 <ul>
 <li>"db": the database project, which contains the schema, stored procedures and other configurations that are compiled into a catalog and run in a VoltDB database.<br>
@@ -70,30 +70,30 @@ please contact <a href="mailto:fieldengineering@voltdb.com">fieldengineering@vol
 </code></pre>
 
 <h2>
-<a name="instructions" class="anchor" href="#instructions"><span class="octicon octicon-link"></span></a>Instructions</h2>
+<a name="demo-instructions" class="anchor" href="#demo-instructions"><span class="octicon octicon-link"></span></a>Demo Instructions</h2>
 
 <ol>
 <li>
-<p>Start the database in the background</p>
+<p>There is only one step to start this example app as a demo on a single server</p>
 
-<p>./start_db.sh</p>
+<p>./run.sh demo</p>
 </li>
-<li>
-<p>Run the client application</p>
+<li><p>Open a web browser to http://hostname:8081</p></li>
+<li><p>To stop the demo:</p></li>
+</ol><p>Stop the client</p>
 
-<p>./run_client.sh</p>
-</li>
-<li><p>Open the web/adperformance.html page in a web browser to view the real-time dashboard</p></li>
-<li>
-<p>To stop the database and clean up temp files</p>
+<pre><code>Ctrl-C
+</code></pre>
 
-<p>voltadmin shutdown
-./clean.sh</p>
-</li>
-</ol><h2>
+<p>Stop the database</p>
+
+<pre><code>voltadmin shutdown
+</code></pre>
+
+<h2>
 <a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Options</h2>
 
-<p>You can control various characteristics of the demo by modifying the parameters passed into the InvestmentBenchmark java application in the run_client.sh script.</p>
+<p>You can control various characteristics of the demo by modifying the parameters passed into the InvestmentBenchmark java application in the "client" function of the run.sh script.</p>
 
 <p>Speed &amp; Duration:</p>
 
@@ -119,29 +119,29 @@ please contact <a href="mailto:fieldengineering@voltdb.com">fieldengineering@vol
 
 <ol>
 <li>
-<p>On each server, edit the start_db.sh file to set the HOST variable to the name of the <strong>first</strong> server in the cluster:</p>
+<p>On each server, edit the run.sh file to set the HOST variable to the name of the <strong>first</strong> server in the cluster:</p>
 
 <p>HOST=voltserver01</p>
 </li>
 <li>
-<p>On each server, edit db/deployment.xml to change hostcount from 1 to the number of servers:</p>
+<p>On each server, edit db/deployment.xml to change hostcount from 1 to the actual number of servers:</p>
 
 <p></p>
 </li>
 <li>
-<p>On each server, run the start script:</p>
+<p>On each server, start the database</p>
 
-<p>./start_db.sh</p>
+<p>./run.sh server</p>
 </li>
 <li>
-<p>On one server, Edit the run_client.sh script to set the SERVERS variable to a comma-separated list of the servers in the cluster</p>
+<p>On one server, Edit the run.sh script to set the SERVERS variable to a comma-separated list of the servers in the cluster</p>
 
 <p>SERVERS=voltserver01,voltserver02,voltserver03</p>
 </li>
 <li>
 <p>Run the client script:</p>
 
-<p>./run_client.sh</p>
+<p>./run.sh client</p>
 </li>
 </ol>
       </section>
