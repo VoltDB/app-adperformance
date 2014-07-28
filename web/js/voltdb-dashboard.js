@@ -82,7 +82,7 @@ function connectToDatabase() {
     // Prepopulate the tps graph with 0s.
     initTpsVals();
 
-    con = VoltDB.AddConnection('localhost', 8080, false, null, null, false, (function(connection, success){}));
+    con = VoltDB.AddConnection(location.hostname, 8080, false, null, null, false, (function(connection, success){}));
     SetRefreshInterval(1);
 }
 
