@@ -114,7 +114,7 @@ function client() {
          client.AdTrackingBenchmark \
          --displayinterval=5 \
          --warmup=5 \
-         --duration=120 \
+         --duration=1800 \
          --servers=$SERVERS \
          --ratelimit=20000 \
          --autotune=true \
