@@ -59,15 +59,26 @@ function SetRefreshInterval(interval) {
 }
 
 $(document).ready(function(){
+    $('#loadingModal').modal('show');
+    checkConnection();
+});
+
+function checkConnection() {
+    VoltDB.TestConnection(location.hostname, 8080, false, null, null, false,
+                          function(connected){
+                              if (connected) {
+                                  $('#loadingModal').modal('hide');
+                                  connectToDatabase();
+                              } else {
+                                  checkConnection();
+                              }
+                          });
+}
+
+function connectToDatabase() {
     con = VoltDB.AddConnection('localhost', 8080, false, null, null, false, (function(connection, success){}));
     SetRefreshInterval(1);
-
-    // $('#table_ad_sum > tbody > tr').click(function() {
-    //     // row was clicked
-    //     console.log("you clicked a row!");
-    // });
-
-});
+}
 
 // Refresh drop-down actions
 $('#refresh-1').click(function(e) {
