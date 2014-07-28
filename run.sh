@@ -101,16 +101,13 @@ function update() {
 }
 
 function client() {
+    # if the class files don't exist, compile the client
+    if [ ! -d client/obj ]; then compile-client; fi
+
     CLASSPATH=`ls -1 $VOLTDB_HOME/voltdb/voltdb-*.jar`
     CLASSPATH="$CLASSPATH:`ls -1 $VOLTDB_HOME/lib/commons-cli-*.jar`"
 
-    cd client 
-    # compile client
-    mkdir -p obj
-    SRC=`find src -name "*.java"`
-    javac -Xlint:unchecked -classpath $CLASSPATH -d obj $SRC
-    # stop if compilation fails
-    if [ $? != 0 ]; then exit; fi
+    cd client
 
     echo "running benchmark..."
     java -classpath obj:$CLASSPATH -Dlog4j.configuration=file://$VOLTDB_HOME/voltdb/log4j.xml \
@@ -131,6 +128,25 @@ function client() {
     cd ..
 }
 
+function compile-client() {
+    CLASSPATH=`ls -1 $VOLTDB_HOME/voltdb/voltdb-*.jar`
+    CLASSPATH="$CLASSPATH:`ls -1 $VOLTDB_HOME/lib/commons-cli-*.jar`"
+
+    pushd client
+    # compile client
+    mkdir -p obj
+    SRC=`find src -name "*.java"`
+    javac -Xlint:unchecked -classpath $CLASSPATH -d obj $SRC
+    # stop if compilation fails
+    if [ $? != 0 ]; then exit; fi
+    popd
+}
+
+# compile the catalog and client code
+function demo-compile() {
+    catalog
+    compile-client
+}
 
 function demo() {
     export DEPLOYMENT=deployment-demo.xml
