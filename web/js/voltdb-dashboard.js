@@ -4,6 +4,7 @@
 
 var con;
 var intervalId;
+var statsIntervalId;
 
 function formatDecimal2(n) {
     return (Math.round(parseFloat(n) * 100) / 100).toFixed(2);
@@ -54,8 +55,10 @@ function SetRefreshInterval(interval) {
         clearInterval(intervalId);
         intervalId = null;
     }
-    if(interval > 0)
+    if(interval > 0) {
         intervalId = setInterval(RefreshData, interval*1000);
+        statsIntervalId = setInterval(RefreshStats,1000);
+    }
 }
 
 $(document).ready(function(){
@@ -76,6 +79,9 @@ function checkConnection() {
 }
 
 function connectToDatabase() {
+    // Prepopulate the tps graph with 0s.
+    initTpsVals();
+
     con = VoltDB.AddConnection('localhost', 8080, false, null, null, false, (function(connection, success){}));
     SetRefreshInterval(1);
 }
@@ -98,3 +104,78 @@ $('#refresh-pause').click(function(e) {
     SetRefreshInterval(-1);
 });
 
+// ----------------- Stats Charts -----------------
+
+// this runs every second
+function RefreshStats() {
+    con.BeginExecute('@Statistics',
+                     ['PROCEDUREPROFILE','0'],
+                     function(response) {
+                         DrawTPSChart(response,'#tps_chart');
+                     }
+                    );
+}
+
+function initTpsVals() {
+    if (tpsVals.length == 0) {
+        var now = (new Date()).getTime();
+        var interval = 1000; // 1 second
+        var ts = now - 60 * 1000;
+        while (ts < now) {
+            tpsVals.push([ts, 0]);
+            ts += interval;
+        }
+    }
+}
+
+var tpsVals = [];
+var prevTsMs = null;
+var tcount0 = null;
+function DrawTPSChart(response, someDiv) {
+    var tables = response.results;
+    var table0 = tables[0];
+    //var colcount = table0.schema.length;
+
+    var cTsMs = table0.data[0][0];
+    if (prevTsMs != null && cTsMs == prevTsMs) {
+        // Skip cached old results
+        return;
+    }
+    var durationMs = cTsMs - prevTsMs;
+    prevTsMs = cTsMs;
+
+    var time = table0.data[0][0]; // milliseconds
+    var tcount1 = 0;
+    for(var r=0;r<table0.data.length;r++){ // for each row
+        //var time = table0.data[r][0]/1000;
+        tcount1 += table0.data[r][3];
+    }
+    var tps;
+    if (tcount0 == null) {
+        tps = 0;
+    } else {
+        tps = (tcount1 - tcount0)*1000/durationMs;
+    }
+    tcount0 = tcount1;
+    tpsVals.push([time,tps]);
+
+    // Only keep the last minute's data to bound memory usage
+    if (tpsVals[tpsVals.length - 1][0] - tpsVals[0][0] > 60000) {
+        tpsVals.shift();
+    }
+
+    var tpsline = { label: "TPS", data: tpsVals };
+
+    var options = {
+        series: {
+	    lines: { show: true, fill: true },
+	    //bars: { show: true, barWidth : 60*1000, fill: true},
+	    points: { show: false }
+        },
+        xaxis: { mode: "time", timezone: "browser", minTickSize: [10, "second"], ticks: 4 },
+        yaxis: { position: "right" },
+        legend: { position: 'nw' }
+    };
+
+    $.plot($(someDiv), [tpsline], options);
+}
