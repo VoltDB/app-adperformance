@@ -74,13 +74,18 @@ please contact <a href="mailto:fieldengineering@voltdb.com">fieldengineering@vol
 
 <ol>
 <li>
-<p>There is only one step to start this example app as a demo on a single server</p>
+<p>Start the web server</p>
+
+<p>./run.sh start_web</p>
+</li>
+<li>
+<p>Start the database and client </p>
 
 <p>./run.sh demo</p>
 </li>
 <li><p>Open a web browser to http://hostname:8081</p></li>
 <li><p>To stop the demo:</p></li>
-</ol><p>Stop the client</p>
+</ol><p>Stop the client (if it hasn't already completed)</p>
 
 <pre><code>Ctrl-C
 </code></pre>
@@ -88,6 +93,11 @@ please contact <a href="mailto:fieldengineering@voltdb.com">fieldengineering@vol
 <p>Stop the database</p>
 
 <pre><code>voltadmin shutdown
+</code></pre>
+
+<p>Stop the web server</p>
+
+<pre><code>./run.sh stop_web
 </code></pre>
 
 <h2>
