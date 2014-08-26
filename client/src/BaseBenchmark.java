@@ -243,6 +243,9 @@ public abstract class BaseBenchmark {
         System.out.println("\nPre-loading Tables...\n");
         initialize();
 
+        // ensure all data from initialize is committed before proceeding to iterate().
+        client.drain();
+
         // Run the benchmark loop for the requested warmup time
         // The throughput may be throttled depending on client configuration
         System.out.println("Warming up for the specified "+ config.warmup +" seconds...");
