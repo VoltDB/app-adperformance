@@ -58,7 +58,7 @@ function compile_procedures() {
     mkdir -p db/obj
     CLASSPATH=`ls -1 $VOLTDB_HOME/voltdb/voltdb-*.jar`
     SRC=`find db/src -name "*.java"`
-    if [ ! -z $SRC ]; then
+    if [ ! -z "$SRC" ]; then
 	javac -classpath $CLASSPATH -d db/obj $SRC
         # stop if compilation fails
         if [ $? != 0 ]; then exit; fi
@@ -113,7 +113,7 @@ function client() {
     java -classpath obj:$CLASSPATH -Dlog4j.configuration=file://$VOLTDB_HOME/voltdb/log4j.xml \
          client.AdTrackingBenchmark \
          --displayinterval=5 \
-         --warmup=5 \
+         --warmup=0 \
          --duration=1800 \
          --servers=$SERVERS \
          --ratelimit=20000 \
@@ -121,8 +121,8 @@ function client() {
          --latencytarget=1 \
          --sites=100 \
          --pagespersite=10 \
-         --advertisers=100 \
-         --campaignsperadvertiser=10 \
+         --advertisers=20 \
+         --campaignsperadvertiser=5 \
          --creativespercampaign=5
 
     cd ..
