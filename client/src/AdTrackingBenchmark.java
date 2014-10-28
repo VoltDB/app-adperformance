@@ -47,7 +47,7 @@ public class AdTrackingBenchmark extends BaseBenchmark {
     // constructor
     public AdTrackingBenchmark(BenchmarkConfig config) {
         super(config);
-        
+
         // set any instance attributes here
         sites = config.sites;
         pagesPerSite = config.pagespersite;
@@ -55,12 +55,13 @@ public class AdTrackingBenchmark extends BaseBenchmark {
         campaignsPerAdvertiser = config.campaignsperadvertiser;
         creativesPerCampaign = config.creativespercampaign;
         modulus = creativesPerCampaign*3;
+        creativeMaxID = advertisers * campaignsPerAdvertiser * creativesPerCampaign;
     }
 
     public void initialize() throws Exception {
 
         // generate inventory
-        System.out.println("Loading Inventory table based on " + sites + 
+        System.out.println("Loading Inventory table based on " + sites +
                            " sites and " + pagesPerSite + " pages per site...");
         for (int i=1; i<=sites; i++) {
             for (int j=1; j<=pagesPerSite; j++) {
@@ -76,37 +77,28 @@ public class AdTrackingBenchmark extends BaseBenchmark {
         }
 
         // generate creatives
-        System.out.println("Loading Creatives table based on " + advertisers + 
-                           " advertisers, each with " + campaignsPerAdvertiser + 
+        System.out.println("Loading Creatives table based on " + advertisers +
+                           " advertisers, each with " + campaignsPerAdvertiser +
                            " campaigns, each with " + creativesPerCampaign + " creatives...");
-        for (int advertiser=1; advertiser<=advertisers; advertiser++) {
-            for (int campaign=1; campaign<=campaignsPerAdvertiser; campaign++) {
-                for (int i=1; i<=creativesPerCampaign; i++) {
-                    creativeMaxID++;
-                    client.callProcedure(new BenchmarkCallback("CREATIVES.insert"),
-                                         "CREATIVES.insert",
-                                         creativeMaxID,
-                                         campaign,
-                                         advertiser);
-                    // show progress
-                    if (creativeMaxID % 5000 == 0) System.out.println("  " + creativeMaxID);
-                }
-            }
-        }
+        client.callProcedure(new BenchmarkCallback("InitializeCreatives"),
+                             "InitializeCreatives",
+                             advertisers,
+                             campaignsPerAdvertiser,
+                             creativesPerCampaign);
     }
 
     public void iterate() throws Exception {
 
         // generate an impression
-        
+
         // each iteration is 1 millisecond later
         // the faster the throughput rate, the faster time flies!
         // this is to get more interesting hourly or minutely results
         iteration++;
-        TimestampType ts = new TimestampType(startTime+(iteration*1000)); 
+        TimestampType ts = new TimestampType(startTime+(iteration*1000));
 
         // random IP address
-        int ipAddress = 
+        int ipAddress =
             rand.nextInt(256)*256*256*256 +
             rand.nextInt(256)*256*256 +
             rand.nextInt(256)*256 +
@@ -158,7 +150,7 @@ public class AdTrackingBenchmark extends BaseBenchmark {
 
     public static void main(String[] args) throws Exception {
         BenchmarkConfig config = BenchmarkConfig.getConfig("AdTrackingBenchmark",args);
-        
+
         BaseBenchmark benchmark = new AdTrackingBenchmark(config);
         benchmark.runBenchmark();
 
