@@ -1,11 +1,12 @@
 // variables for selected row of table
 var selectedCampaign = $('#table_ad_sum').children('td:first').text();
 var selectedIndex = -1;
+var advertiser = 1;
 
 // connect stored procedure calls with chart or table function
 function RefreshTable1(){
     con.BeginExecute('advertiser_summary', 
-                     [30], 
+                     [advertiser], 
                      function(response) {
                          DrawTable(response,'#table_ad_sum',selectedIndex)}
                     );
@@ -13,7 +14,7 @@ function RefreshTable1(){
 
 function RefreshTable2(){
     con.BeginExecute('campaign_summary', 
-                     [30,selectedCampaign], 
+                     [advertiser,selectedCampaign], 
                      function(response) {
                          DrawTable(response,'#table_camp_sum',-1);
                      }
@@ -22,7 +23,7 @@ function RefreshTable2(){
 
 function RefreshChart1(){
     con.BeginExecute('advertiser_minutely_clicks',
-                     [30],
+                     [advertiser],
                      function(response) { 
                          DrawTimeLinesChart(response,'#chart1'); 
                      }
