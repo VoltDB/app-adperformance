@@ -97,7 +97,7 @@ function cluster-server() {
 # update catalog on a running database
 function update() {
     catalog
-    voltadmin update $APPNAME.jar deployment.xml
+    voltadmin update db/$APPNAME.jar db/deployment.xml
 }
 
 function client() {
